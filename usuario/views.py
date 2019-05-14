@@ -16,12 +16,9 @@ def bienvenida(request):
 #home
 def home(request):
     generos = Genero.objects.all()
-    libros = Libro.objects.all()
-    masNuevo = libros[0]
-    for libro in libros:
-        if libro.anoEdicion > masNuevo.anoEdicion:
-            masNuevo = libro
-    context = {'generos': generos, 'masNuevo': masNuevo}
+    libros = Libro.objects.all().order_by('-anoEdicion')
+
+    context = {'generos': generos, 'libros': libros}
     return render(request, 'home.html', context)
 
 
@@ -32,7 +29,6 @@ def registro(request):
 
         if form.is_valid():
             usuario = form.save()
-
 
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')

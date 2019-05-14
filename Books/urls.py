@@ -23,5 +23,6 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('usuario.urls')),
+    path('', include('libro.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
 ]+static('/static/', document_root=settings.STATIC_ROOT, show_indexes=True)

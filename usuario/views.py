@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 
 from .forms import ExtendedUserCreationForm
 from .models import Usuario
+from libro.models import Genero, Libro
 # Create your views here.
 
 #Bienvenida
@@ -14,7 +15,14 @@ def bienvenida(request):
 
 #home
 def home(request):
-    return render(request, 'home.html')
+    generos = Genero.objects.all()
+    libros = Libro.objects.all()
+    masNuevo = libros[0]
+    for libro in libros:
+        if libro.anoEdicion > masNuevo.anoEdicion:
+            masNuevo = libro
+    context = {'generos': generos, 'masNuevo': masNuevo}
+    return render(request, 'home.html', context)
 
 
 #Registrar usuario
@@ -59,3 +67,5 @@ def inicioSesion(request):
             return HttpResponse("Invalid login details given")
     else:
         return render(request, 'login.html', {})
+
+

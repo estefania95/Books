@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from .forms import ExtendedUserCreationForm
+from .forms import ExtendedUserCreationForm, UsuarioForm
 from .models import Usuario
 from libro.models import Genero, Libro
 # Create your views here.
@@ -26,15 +26,20 @@ def home(request):
 def registro(request):
     if request.method == 'POST':
         form = ExtendedUserCreationForm(request.POST)
+        usuario_form = UsuarioForm(request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and usuario_form.is_valid():
             usuario = form.save()
+
+            profile = usuario_form.save(commit=False)
+            profile.usuario = usuario
+            profile.save()
 
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
 
-            usuari = authenticate(username=username, password=password)
-            login(request, usuari)
+            usuario = authenticate(username=username, password=password)
+            login(request, usuario)
 
             return redirect('usuario:home')
     else:
